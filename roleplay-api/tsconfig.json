@@ -1,20 +1,27 @@
 {
   "extends": "adonis-preset-ts/tsconfig.json",
   "include": [
-    "**/*"
+  "./**/*.js"
   ],
   "exclude": [
     "node_modules",
     "build"
   ],
+  "files":[
+    "node_modules/adonisjs-types/index.d.ts"
+  ],
   "compilerOptions": {
     "outDir": "build",
     "rootDir": "./",
+   
+      "allowJs":true,
+"moduleResolution":"node",
+"lib":[
+"es2015"
+],
     "sourceMap": true,
     "paths": {
-      "App/*": [
-        "./app/*"
-      ],
+      
       "Config/*": [
         "./config/*"
       ],
@@ -29,7 +36,9 @@
       "@adonisjs/core",
       "@adonisjs/repl",
       "@japa/preset-adonis/build/adonis-typings",
-      "@adonisjs/lucid"
+      "@adonisjs/lucid",
+      "@adonisjs/mail",
+      "@adonisjs/view"
     ]
   }
 }
