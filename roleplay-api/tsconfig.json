@@ -1,7 +1,7 @@
 {
   "extends": "adonis-preset-ts/tsconfig.json",
   "include": [
-  "./**/*.js"
+  "./**/*"
   ],
   "exclude": [
     "node_modules",
@@ -21,6 +21,9 @@
 ],
     "sourceMap": true,
     "paths": {
+       "App/*": [
+        "./app/*"
+      ],
       
       "Config/*": [
         "./config/*"

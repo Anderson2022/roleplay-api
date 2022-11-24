@@ -1,29 +1,52 @@
- import type { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
-
-
-import Mail from "@ioc:Adonis/Addons/Mail";
-import User from "App/Models/User";
+import type { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
+import Mail from '@ioc:Adonis/Addons/Mail'
+import User from 'App/Models/User'
+import { randomBytes } from 'crypto'
+import {promisify}from 'util'
+import ForgortPasswordValidator from 'App/Validators/ForgortPasswordValidator'
+import Query from 'mysql2/typings/mysql/lib/protocol/sequences/Query'
 
 export default class PasswordsController {
-    public async forgot({ request, response }: HttpContextContract) {
-        const { email, resetPasswordUrl } = request.only(['email', 'resetPasswordUrl'])
-        
-        const user = await User.findByOrFail('email', email)
-        
-        return user
+  public async forgotpassword ({ request, response }: HttpContextContract) {
+    const { email, resetPasswordUrl } = await request.validate(ForgortPasswordValidator)
 
-        await Mail.send((message) => {         
-            message
-                .from('no-reply@rolopay.com')
-                .to(email)
-                .subject('Roleplay: recuperação da senhas ')
-                .htmlView('views/forgotpassword', {
-                    productName: 'Roleplay',
-                        name: user.username,
-                        resetPasswordUrl,
-                })
-        } )
+    const user = await User.findByOrFail('email', email)
 
-        return response.noContent()
-    }
+
+    const random = await promisify(randomBytes)(24)
+    const token = random.toString('hex')
+    await user.related('tokens').updateOrCreate(
+      { userId: user.id },
+      {token,}
+
+    )
+      const resetPasswordUrlWithToken = `${resetPasswordUrl}?token=${token}`
+    await Mail.send((message) => {
+      message
+        .from('no-reply@rolopay.com')
+        .to(email)
+        .subject('DomPixel: recuperação da senhas ')
+        .htmlView('forgotpassword', {
+          productName: 'DomPixel',
+          name: user.username,
+          resetPasswordUrl:resetPasswordUrlWithToken,
+        })
+    })
+
+    return response.noContent()
+  }
+  public async resetPassword({ request, response }: HttpContextContract) {
+    const { token, password } = request.only(['token', 'password'])
+
+    const userByToken = await User.query()
+      .whereHas('tokens', (query) => {
+        query.where('token', token)
+      })
+      .firstOrFail()
+
+    userByToken.password = password
+    await userByToken.save()
+
+    return response.noContent()
+  }
 }
