@@ -5,6 +5,7 @@ import { randomBytes } from 'crypto'
 import {promisify}from 'util'
 import ForgortPasswordValidator from 'App/Validators/ForgortPasswordValidator'
 import Query from 'mysql2/typings/mysql/lib/protocol/sequences/Query'
+import TokenExpiredException from 'App/Exceptions/TokenExpiredException'
 
 export default class PasswordsController {
   public async forgotpassword ({ request, response }: HttpContextContract) {
@@ -42,10 +43,15 @@ export default class PasswordsController {
       .whereHas('tokens', (query) => {
         query.where('token', token)
       })
+      .preload('tokens')
       .firstOrFail()
+
+    const tokenAge = userByToken.tokens[0].createdAt.diffNow('hours').hours
+    if (tokenAge > 2) throw new TokenExpiredException()
 
     userByToken.password = password
     await userByToken.save()
+    await userByToken.tokens[0].delete()
 
     return response.noContent()
   }
