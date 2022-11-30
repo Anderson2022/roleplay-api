@@ -7,7 +7,7 @@ import supertest from 'supertest'
 const BASE_URL = `http://${process.env.HOST}:${process.env.PORT}`
 
 test.group('User', (group) => {
-  test('it should create an user', async (assert) => {
+  test.only('it should create an user', async (assert) => {
     const userPayload = {
       email: 'test@test.com',
       username: 'test',
