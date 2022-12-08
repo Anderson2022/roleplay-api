@@ -18,7 +18,7 @@
 |
 */
 
-import { Response } from '@adonisjs/core/build/standalone'
+
 import Route from '@ioc:Adonis/Core/Route'
 
 Route.get('/', async () => {
@@ -26,4 +26,7 @@ Route.get('/', async () => {
 })
 
 Route.post('/users', 'UsersController.store')
+
+
 Route.put('/users/:id', 'UsersController.update')
+Route.post('/forgot-password', 'PasswordsController.forgotPassword');

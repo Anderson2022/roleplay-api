@@ -96,7 +96,7 @@ test.group("User", (group) => {
     const { body } = await supertest(BASE_URL)
       .post("/users")
       .send({
-        email: "teste@teste.com",
+        email: "test@test.com",
         password: "tes",
         username: "test",
       })
@@ -107,23 +107,25 @@ test.group("User", (group) => {
 
   test("it should update an user", async ({ assert }) => {
     const { id, password } = await UserFactory.create();
-    const email = 'teste@teste.com'
+    const email = 'test@test.com'
     const avatar = "http://github.com/giuliana-bezerra.png";
+
     const { body } = await supertest(BASE_URL)
       .put(`/users/${id}`)
       .send({
         email,
-        password,
         avatar,
+        password,
       })
       .expect(200);
+
     assert.exists(body.user, "User undefined");
     assert.equal(body.user.email, email);
     assert.equal(body.user.avatar, avatar);
     assert.equal(body.user.id, id);
   });
 
-  
+
   test("it should update an user password", async ({ assert }) => {
     const user = await UserFactory.create();
     const password = "teste"
@@ -135,7 +137,7 @@ test.group("User", (group) => {
         avatar: user.avatar
       })
       .expect(200);
-    assert.exists(body.user, "User undefined");    
+    assert.exists(body.user, "User undefined");
     assert.equal(body.user.id, user.id);
     await user.refresh()
     assert.isTrue(await Hash.verify(user.password, password))
@@ -191,8 +193,10 @@ test.group("User", (group) => {
     })
     .expect(422);
   assert.equal(body.code, "BAD_REQUEST");
-  assert.equal(body.status, 422);
-});
+    assert.equal(body.status, 422);
+  });
+
+
 
   group.setup(async () => {
     await Database.beginGlobalTransaction();
