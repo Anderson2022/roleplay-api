@@ -6,9 +6,9 @@
  */
 
 import Env from '@ioc:Adonis/Core/Env'
-import { mailConfig } from '@adonisjs/mail/build/config'
+import { MailConfig } from '@ioc:Adonis/Addons/Mail'
 
-export default mailConfig({
+const mailConfig: MailConfig = {
   /*
   |--------------------------------------------------------------------------
   | Default mailer
@@ -52,5 +52,8 @@ export default mailConfig({
 				type: 'login',
 			}
     },
+
   },
-})
+}
+
+export default mailConfig
