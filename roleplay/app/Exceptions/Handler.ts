@@ -23,21 +23,35 @@ export default class ExceptionHandler extends HttpExceptionHandler {
     super(Logger);
   }
 
-  public async handle(error: Exception, ctx: HttpContextContract): Promise<any> {
+  public async handle(
+    error: Exception,
+    ctx: HttpContextContract
+  ): Promise<any> {
+  
     if (error.status === 422)
       return ctx.response.status(error.status).send({
         code: "BAD_REQUEST",
         message: error.message,
         status: error.status,
-        errors: error['messages']?.errors ? error['messages'].errors : '',
+        errors: error["messages"]?.errors ? error["messages"].errors : "",
       });
-    
-    else if (error.code === 'E_ROW_NOT_FOUND')
+    else if (error.code === "E_ROW_NOT_FOUND")
       return ctx.response.status(error.status).send({
-        code: 'BAD_REQUEST',
-        message: 'resource not found',
+        code: "BAD_REQUEST",
+        message: "resource not found",
         status: 404,
-      })
+      });
+    else if (
+      ["E_INVALID_AUTH_UID", "E_INVALID_AUTH_PASSWORD"].includes(
+        error.code || ""
+      )
+    )
+      return ctx.response.status(error.status).send({
+        code: "BAD_REQUEST",
+        message: "invalid credentials",
+        status: 400,
+      });
+
     return super.handle(error, ctx);
   }
 }
