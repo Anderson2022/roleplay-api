@@ -1,8 +1,25 @@
 import Database from "@ioc:Adonis/Lucid/Database";
 import { test } from "@japa/runner";
+import User from "App/Models/User";
 import { UserFactory } from "Database/factories";
 
+
+let token = ''
+let user = {} as User
+
 test.group("User", (group) => {
+  // group.setup(async ({ client }) => {
+  //   const plainPassword = 'test'
+  //   const newUser = await UserFactory.merge({ password: plainPassword }).create()
+  //   const response = await client
+  //     .post('/sessions')
+  //     .json({ email: newUser.email, password: plainPassword })
+
+  //   response.assertStatus()
+
+  //   token = response.token.token
+  //   user =
+  // })
 
   group.each.setup(async () => {
     await Database.beginGlobalTransaction()
@@ -79,11 +96,24 @@ test.group("User", (group) => {
   });
 
   test("it should update an user", async ({ client }) => {
-    const user = await UserFactory.create()
+    const plainPassword = 'test'
+    const newUser = await UserFactory.merge({ password: plainPassword }).create()
+    let response = await client
+      .post('/sessions')
+      .json({ email: newUser.email, password: plainPassword })
+
+    response.assertStatus(201)
+
+ 
+
+    // token = response.body
+    // user = newUser
+
+    user = await UserFactory.create()
     const email = 'test@test.com'
     const avatar = "http://github.com/giuliana-bezerra.png";
 
-    const response = await client
+    response = await client
       .put(`/users/${user.id}`)
       .json({
         email,
@@ -102,7 +132,6 @@ test.group("User", (group) => {
   });
 
   test("it should update an user password", async ({ client }) => {
-    const user = await UserFactory.create()
     const password = "teste"
     const response = await client
       .put(`/users/${user.id}`)
@@ -155,12 +184,12 @@ test.group("User", (group) => {
   });
 
   test("it should return 422 when providing an invalid avatar", async ({ client }) => {
-    const { id, email, password } = await UserFactory.create();
+
     const response = await client
-      .put(`/users/${id}`)
+      .put(`/users/${user.id}`)
       .json({
-        email,
-        password,
+        email: user.email,
+        password: user.avatar,
         avatar: "test",
       })
     response.assertStatus(422);

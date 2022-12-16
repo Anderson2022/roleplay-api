@@ -50,7 +50,7 @@ export default class PasswordsController {
       .firstOrFail();
 
     const tokenAge = Math.abs(userByToken.tokens[0].createdAt.diffNow('hours').hours)
-    if (tokenAge >  2 ) throw new TokenExpiredException()
+    if (tokenAge > 2) throw new TokenExpiredException()
 
     userByToken.password = password;
     await userByToken.save();
