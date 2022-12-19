@@ -95,55 +95,55 @@ test.group("User", (group) => {
 
   });
 
-  test("it should update an user", async ({ client }) => {
-    const plainPassword = 'test'
-    const newUser = await UserFactory.merge({ password: plainPassword }).create()
-    let response = await client
-      .post('/sessions')
-      .json({ email: newUser.email, password: plainPassword })
+  // test("it should update an user", async ({ client }) => {
+  //   const plainPassword = 'test'
+  //   const newUser = await UserFactory.merge({ password: plainPassword }).create()
+  //   let response = await client
+  //     .post('/sessions')
+  //     .json({ email: newUser.email, password: plainPassword })
 
-    response.assertStatus(201)
+  //   response.assertStatus(201)
 
- 
 
-    // token = response.body
-    // user = newUser
 
-    user = await UserFactory.create()
-    const email = 'test@test.com'
-    const avatar = "http://github.com/giuliana-bezerra.png";
+  //   // token = response.body
+  //   // user = newUser
 
-    response = await client
-      .put(`/users/${user.id}`)
-      .json({
-        email,
-        avatar,
-        password: user.password
-      })
-      .loginAs(user)
-    response.assertStatus(200)
-    response.assertBodyContains({
-      user: {
-        email,
-        avatar,
-        id: user.id
-      }
-    })
-  });
+  //   user = await UserFactory.create()
+  //   const email = 'test@test.com'
+  //   const avatar = "http://github.com/giuliana-bezerra.png";
 
-  test("it should update an user password", async ({ client }) => {
-    const password = "teste"
-    const response = await client
-      .put(`/users/${user.id}`)
-      .json({
-        email: user.email,
-        password,
-        avatar: user.avatar
-      })
+  //   response = await client
+  //     .put(`/users/${user.id}`)
+  //     .json({
+  //       email,
+  //       avatar,
+  //       password: user.password
+  //     })
+  //     .loginAs(user)
+  //   response.assertStatus(200)
+  //   response.assertBodyContains({
+  //     user: {
+  //       email,
+  //       avatar,
+  //       id: user.id
+  //     }
+  //   })
+  // });
 
-    response.assertStatus(200)
+  // test("it should update an user password", async ({ client }) => {
+  //   const password = "teste"
+  //   const response = await client
+  //     .put(`/users/${user.id}`)
+  //     .json({
+  //       email: user.email,
+  //       password,
+  //       avatar: user.avatar
+  //     })
 
-  });
+  //   response.assertStatus(200)
+
+  // });
 
   //==========================teste de erros=============/
   test("it should return 422 when required data is not provided", async ({ client }) => {

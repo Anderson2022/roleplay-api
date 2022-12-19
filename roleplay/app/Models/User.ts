@@ -6,8 +6,11 @@ import {
   beforeSave,
   hasMany,
   HasMany,
+  ManyToMany,
+  manyToMany,
 } from "@ioc:Adonis/Lucid/Orm";
 import LinkToken from "./LinkToken";
+import Group from "./Group";
 
 export default class User extends BaseModel {
   @column({ isPrimary: true })
@@ -34,6 +37,12 @@ export default class User extends BaseModel {
     foreignKey: "userId",
   })
   public tokens: HasMany<typeof LinkToken>;
+
+  @manyToMany(() => Group, {
+    pivotTable: 'groups_users',
+  } )
+
+  public groups: ManyToMany<typeof Group>
 
 
   @beforeSave()
