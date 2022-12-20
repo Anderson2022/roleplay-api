@@ -9,7 +9,7 @@ public static table = 'groups_requests'
   @column({ isPrimary: true })
   public id: number
 
-  @column({ columnName: 'user_id' })
+  @column({ columnName: 'user_id', serializeAs: 'userId' })
   public userId: number
 
   @belongsTo(() => User, {
@@ -17,7 +17,7 @@ public static table = 'groups_requests'
   })
   public user: BelongsTo<typeof User>
 
-  @column({ columnName: 'group_id' })
+  @column({ columnName: 'group_id', serializeAs: 'groupId' })
   public groupId: number
 
   @belongsTo(() => Group, {
