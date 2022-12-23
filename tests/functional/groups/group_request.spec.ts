@@ -5,7 +5,7 @@ import { UserFactory } from 'Database/factories'
 import test from 'japa'
 import supertest from 'supertest'
 
-import { GroupFactory } from './../../database/factories/index'
+import { GroupFactory } from '../../../database/factories/index'
 
 const BASE_URL = `http://${process.env.HOST}:${process.env.PORT}`
 

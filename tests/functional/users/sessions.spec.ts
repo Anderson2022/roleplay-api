@@ -6,7 +6,7 @@ import supertest from 'supertest'
 const BASE_URL = `http://${process.env.HOST}:${process.env.PORT}`
 
 test.group('Session', (group) => {
-  test('it should authenticate an user', async (assert) => {
+  test.only('it should authenticate an user', async (assert) => {
     const plainPassword = 'test'
     const { id, email } = await UserFactory.merge({ password: plainPassword }).create()
     const { body } = await supertest(BASE_URL)
