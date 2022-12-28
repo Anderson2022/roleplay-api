@@ -1,12 +1,15 @@
 import Mail from '@ioc:Adonis/Addons/Mail'
 import Hash from '@ioc:Adonis/Core/Hash'
 import Database from '@ioc:Adonis/Lucid/Database'
+import User from 'App/Models/User'
 import { UserFactory } from 'Database/factories'
 import test from 'japa'
 import { DateTime, Duration } from 'luxon'
 import supertest from 'supertest'
 
 const BASE_URL = `http://${process.env.HOST}:${process.env.PORT}`
+let token = ''
+let user = {} as User
 
 test.group('Password', (group) => {
   test('it should send and email with forgot password instructions', async (assert) => {
@@ -38,13 +41,13 @@ test.group('Password', (group) => {
 
   test('it should create a reset password token', async (assert) => {
     const user = await UserFactory.create()
-
     await supertest(BASE_URL)
       .post('/forgot-password')
       .send({
         email: user.email,
         resetPasswordUrl: 'url',
       })
+      .set('Authorization', `Bearer ${token}`)
       .expect(204)
 
     const tokens = await user.related('tokens').query()
